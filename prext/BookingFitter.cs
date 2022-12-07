@@ -9,10 +9,10 @@ public static class BookingFitter
             int diff = b1.StartDate.CompareTo(b2.StartDate);
             return diff == 0 ? b1.Id.CompareTo(b2.Id) : diff;
         });
-        
+
         List<(int, bool, int)> endpoints = BookingParser.BookingsToEndpoints(bookings);
-        
-        
+
+
         List<Booking>[] preColored = new List<Booking>[k];
         for (int c = 0; c < k; c++)
             preColored[c] = new List<Booking>();
@@ -29,7 +29,7 @@ public static class BookingFitter
         ColorClass[] colors = new ColorClass[k];
         for (int c = 0; c < k; c++)
             colors[c] = ccZero;
-        
+
         List<(int, ColorClass?, int?, int?)> states = new List<(int, ColorClass?, int?, int?)>();
 
         int direction = 1;
@@ -39,7 +39,6 @@ public static class BookingFitter
 
         while (true)
         {
-
             if (i >= endpoints.Count || i < 0) break;
 
             (_, bool eIsStart, int eIdx) = endpoints[i];
@@ -108,6 +107,7 @@ public static class BookingFitter
                                 {
                                     ccZero = null;
                                 }
+
                                 booking.Cc = cc;
                                 throw new Exception();
                             }
@@ -201,7 +201,7 @@ public static class BookingFitter
                 if (direction == 1)
                 {
                     ColorClass? cc = booking.Cc;
-                    int bookingIdx = cc!.Bookings.IndexOf(booking);
+                    int bookingIdx = cc!.Bookings.FindIndex(b => b == booking);
                     cc.Bookings.RemoveAt(bookingIdx);
                     cc.NumMovables--;
                     if (cc.NumMovables == 0)
@@ -215,6 +215,7 @@ public static class BookingFitter
                             {
                                 b.Cc = ccZero;
                             }
+
                             foreach (int c in cc.Colors)
                             {
                                 colors[c] = ccZero;
@@ -250,14 +251,17 @@ public static class BookingFitter
                         {
                             colors[c] = cc;
                         }
+
                         foreach (Booking b in cc.Bookings)
                         {
-                            b.Cc= cc;
+                            b.Cc = cc;
                         }
+
                         foreach (int c in cc!.Colors)
                         {
                             ccZero!.Colors.Remove(c);
                         }
+
                         foreach (Booking b in cc.Bookings)
                         {
                             ccZero!.Bookings.Remove(b);
@@ -280,18 +284,13 @@ public static class BookingFitter
             i--;
             (_, bool eIsStart, int eIdx) = endpoints[i];
             Booking booking = bookings[eIdx];
-            
-            if (eIdx == 52) //booking skal være 24826
-            {
-                Console.WriteLine();
-            }
 
             if (eIsStart && !booking.Movable) // Start point of pre-colored interval
             {
                 booking.Cc!.Bookings.RemoveAt(booking.Cc.Bookings.Count - 1);
                 continue;
             }
-            
+
             else if (eIsStart && booking.Movable) // Start point of movable interval
             {
                 (int j, ccZero, _, _) = states[^1];
@@ -300,7 +299,7 @@ public static class BookingFitter
                 ccs[j].Bookings.RemoveAt(ccs[j].Bookings.Count - 1);
                 continue;
             }
-            
+
             else if (!eIsStart && !booking.Movable) // End point of pre-colored interval
             {
                 (int j, ccZero, int? bookingIdx, int? cIdx) = states[^1];
@@ -318,7 +317,7 @@ public static class BookingFitter
                     ccs.RemoveAt(ccs.Count - 1);
                     ccZero = null;
                 }
-                
+
                 booking.Cc!.Bookings.Insert((int)bookingIdx!, booking);
                 continue;
             }
@@ -335,15 +334,18 @@ public static class BookingFitter
                     {
                         colors[c] = cc;
                     }
+
                     foreach (Booking b in cc.Bookings)
                     {
-                        b.Cc= cc;
+                        b.Cc = cc;
                     }
+
                     foreach (int c in cc.Colors)
                     {
                         int cIdx = ccZero!.Colors.FindIndex(cl => cl == c);
                         ccZero.Colors.RemoveAt(cIdx);
                     }
+
                     foreach (Booking b in cc.Bookings)
                     {
                         ccZero!.Bookings.Remove(b);
@@ -355,12 +357,7 @@ public static class BookingFitter
                 cc.Bookings.Insert((int)bookingIdx!, booking);
 
                 List<int> usedColors = (from b in cc.Bookings where b.Color != -1 select b.Color).ToList();
-                
-                if (eIdx == 52) //booking skal være 24826
-                {
-                    Console.WriteLine();
-                }
-                
+
                 foreach (int c in cc.Colors)
                 {
                     if (!usedColors.Any(cl => cl == c))
@@ -369,6 +366,7 @@ public static class BookingFitter
                         break;
                     }
                 }
+
                 continue;
             }
         }
