@@ -5,7 +5,16 @@
     <projectFile>prext/prext.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3ebf21a7-0629-466b-8289-ce1d23f30618" name="Changes" comment="" />
+    <list default="true" id="3ebf21a7-0629-466b-8289-ce1d23f30618" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.prext/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.prext/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prext/BookingFitter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/prext/BookingFitter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.dll" beforeDir="false" afterPath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.dll" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/ref/prext.dll" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/ref/prext.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/refint/prext.dll" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/refint/prext.dll" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +24,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/43545f997d77aac8809b697f598077dc86a5f7eb133baed3fdae646cfd82ffc8/ArraySortHelper.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c6ad457575d35dcbff26c9a5e3fb1d92f1d3c55f25ef6ebf475367b5d8/List.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f3b9684f72bc2cc435eb694f7cc86eca8c240d2d1cefa1e8697a61f1f2f27f/SafeFileHandle.Windows.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/prext/obj/Debug/net6.0/.NETCoreApp,Version=v6.0.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -85,13 +95,23 @@
       <workItem from="1670313621988" duration="18334000" />
       <workItem from="1670350578722" duration="2242000" />
       <workItem from="1670354778790" duration="23885000" />
-      <workItem from="1670379481529" duration="380000" />
+      <workItem from="1670379481529" duration="473000" />
+      <workItem from="1670437418848" duration="1264000" />
     </task>
+    <task id="LOCAL-00001" summary="Initial">
+      <created>1670379896528</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1670379896528</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -106,25 +126,10 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Initial" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/prext/BookingFitter.cs</url>
-          <line>360</line>
-          <properties documentPath="C:\Users\William\OneDrive\Skrivebord\Eddies\prext\prext\prext\BookingFitter.cs" initialLine="360" containingFunctionPresentation="method 'PrextNoPruning'">
-            <startOffsets>
-              <option value="13117" />
-            </startOffsets>
-            <endOffsets>
-              <option value="13137" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="Frame#prext.BookingFitter.PrextNoPruning" memberName="bookings" />
