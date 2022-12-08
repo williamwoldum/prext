@@ -1,18 +1,49 @@
+using System.Runtime.InteropServices;
+
 namespace prext;
+
+
+using System.Threading.Tasks;
+
+
 
 public static class BookingFitter
 {
-    public static List<Booking>? PrextNoPruning(List<Booking> bookings, int k)
+    public static async Task<List<Booking>> Prext(List<Booking> bookings, int k, int timeoutInSecs=2)
     {
-        bookings.Sort((b1, b2) =>
+        var task = Task.Run(() => PrextNoTimeout(bookings, k));
+        
+        try
         {
-            int diff = b1.StartDate.CompareTo(b2.StartDate);
-            return diff == 0 ? b1.Id.CompareTo(b2.Id) : diff;
-        });
+            if (await Task.WhenAny(task, Task.Delay(timeoutInSecs * 1000)) == task)
+            {
+                return task.Result;
+            }
+            throw new TimeoutException("Timed out");
+        }
+        
+        catch (AggregateException ae)
+        {
+            foreach (var ex in ae.InnerExceptions)
+            {
+                throw ex;
+            }
+        }
+
+        throw new Exception();
+    }
+
+    private static List<Booking> PrextNoTimeout(List<Booking> bookings, int k)
+    {
+        if (!ValidateBookings(bookings, k))
+            throw new ArgumentException("Supplied bookings are invalid", nameof(bookings));
+
+        bookings = PrepareBookingColoringsForRecoloring(bookings);
+        
 
         List<(int, bool, int)> endpoints = BookingParser.BookingsToEndpoints(bookings);
-        
-        
+
+
         List<Booking>[] preColored = new List<Booking>[k];
         for (int c = 0; c < k; c++)
             preColored[c] = new List<Booking>();
@@ -21,7 +52,7 @@ public static class BookingFitter
             preColored[booking.Color].Add(booking);
 
         int[] preColoredIdx = new int[k];
-        
+
 
         List<ColorClass> ccs = new List<ColorClass> { new ColorClass { Colors = Enumerable.Range(0, k).ToList() } };
 
@@ -30,7 +61,7 @@ public static class BookingFitter
         ColorClass[] colors = new ColorClass[k];
         for (int c = 0; c < k; c++)
             colors[c] = ccZero;
-        
+
 
         List<(int, ColorClass?, int?, int?)> states = new List<(int, ColorClass?, int?, int?)>();
 
@@ -79,6 +110,7 @@ public static class BookingFitter
 
                     continue;
                 }
+                
                 // Start point of movable interval
                 case true when booking.Movable:
                 {
@@ -127,7 +159,7 @@ public static class BookingFitter
                     direction = -1;
                     continue;
                 }
-                
+
                 // End point of pre-colored interval
                 case false when !booking.Movable:
                 {
@@ -178,7 +210,7 @@ public static class BookingFitter
                         (int j, ccZero, int? bookingIdx, int? cIdx) = states[^1];
                         states.RemoveAt(states.Count - 1);
                         ColorClass cc = booking.Cc!;
-                        
+
                         switch (j)
                         {
                             case 0:
@@ -199,7 +231,7 @@ public static class BookingFitter
                         continue;
                     }
                 }
-                
+
                 // End point of movable interval
                 default:
                 {
@@ -274,10 +306,10 @@ public static class BookingFitter
                 }
             }
         }
-        
+
         ////////////////////////////////////////////////////////////////////////////////
 
-        if (i < 0) return null;
+        if (i < 0) throw new ArgumentException("Bookings can not be fitted", nameof(bookings));
 
         while (i > 0)
         {
@@ -367,9 +399,26 @@ public static class BookingFitter
 
         return bookings;
     }
-
-    public static bool BookingsValidator(List<Booking> bookings, int k)
+    
+    private static List<Booking> PrepareBookingColoringsForRecoloring(List<Booking> bookings)
     {
+        bookings.Sort((b1, b2) => b1.StartDate.CompareTo(b2.StartDate));
+        
+        foreach (Booking booking in bookings)
+        {
+            booking.Color = booking.Movable ? -1 : booking.OrigColor;
+        }
+
+        return bookings;
+    }
+
+    public static bool ValidateBookings(List<Booking> bookings, int k)
+    {
+        if (bookings.Any(booking => booking.Color < 0 || booking.Color >= k))
+        {
+            return false;
+        }
+
         List<(int, bool, int)> endpoints = BookingParser.BookingsToEndpoints(bookings);
         bool[] colorMap = new bool[k];
 
