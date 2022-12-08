@@ -1,8 +1,8 @@
 using prext;
 
-namespace Tests.BookingFitterTests;
+namespace Tests.IntervalFitterTests;
 
-public class ValidateBookingsTests
+public class ValidateIntervalsTests
 {
     [Theory]
     [InlineData("kolding", "10 m2 4pers u/udstyr")]
@@ -24,10 +24,10 @@ public class ValidateBookingsTests
     [InlineData("nordsoe", "Komfortplads")]
     [InlineData("nordsoe", "El-plads")]
     [InlineData("nordsoe", "Panoramaplads")]
-    public void ValidateBookingsValidDomain(string dataSetName, string campType)
+    public void ValidateIntervalsValidDomain(string dataSetName, string campType)
     {
-        (List<Booking>? bookings, int k) = TestDataLoader.LoadBookingsFromDataSet(dataSetName, campType);
-        Assert.True(BookingFitter.ValidateBookings(bookings, k));
+        (List<Interval>? intervals, int k) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
+        Assert.True(IntervalFitter.ValidateIntervals(intervals, k));
     }
     
     [Theory]
@@ -50,16 +50,16 @@ public class ValidateBookingsTests
     [InlineData("nordsoe", "Komfortplads")]
     [InlineData("nordsoe", "El-plads")]
     [InlineData("nordsoe", "Panoramaplads")]
-    public void ValidateBookingsInValidDomainOverlappingBookings(string dataSetName, string campType)
+    public void ValidateIntervalsInValidDomainOverlappingIntervals(string dataSetName, string campType)
     {
-        (List<Booking>? bookings, int k) = TestDataLoader.LoadBookingsFromDataSet(dataSetName, campType);
+        (List<Interval>? intervals, int k) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
         
         Random random = new Random();
-        int randomIdx = random.Next(0, bookings.Count);
+        int randomIdx = random.Next(0, intervals.Count);
         
-        bookings.Insert(0, bookings[randomIdx]);
+        intervals.Insert(0, intervals[randomIdx]);
         
-        Assert.False(BookingFitter.ValidateBookings(bookings, k));
+        Assert.False(IntervalFitter.ValidateIntervals(intervals, k));
     }
     
     [Theory]
@@ -82,17 +82,17 @@ public class ValidateBookingsTests
     [InlineData("nordsoe", "Komfortplads")]
     [InlineData("nordsoe", "El-plads")]
     [InlineData("nordsoe", "Panoramaplads")]
-    public void ValidateBookingsInValidDomainTooFewColors(string dataSetName, string campType)
+    public void ValidateIntervalsInValidDomainTooFewColors(string dataSetName, string campType)
     {
-        (List<Booking>? bookings, int k) = TestDataLoader.LoadBookingsFromDataSet(dataSetName, campType);
+        (List<Interval>? intervals, int k) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
         
         Random random = new Random();
-        int randomIdx = random.Next(1, bookings.Count);
+        int randomIdx = random.Next(1, intervals.Count);
         
-        bookings[randomIdx].Color = k - 1 + randomIdx;
-        randomIdx = random.Next(0, bookings.Count);
-        bookings[randomIdx].Color = 0 - randomIdx;
+        intervals[randomIdx].Color = k - 1 + randomIdx;
+        randomIdx = random.Next(0, intervals.Count);
+        intervals[randomIdx].Color = 0 - randomIdx;
         
-        Assert.False(BookingFitter.ValidateBookings(bookings, k));
+        Assert.False(IntervalFitter.ValidateIntervals(intervals, k));
     }
 }

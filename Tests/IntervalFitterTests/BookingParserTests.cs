@@ -1,16 +1,16 @@
 using prext;
 
-namespace Tests.BookingFitterTests;
+namespace Tests.IntervalFitterTests;
 
-public class BookingParserTests
+public class IntervalParserTests
 {
     [Fact]
-    public void BookingsToEndpointsTestsOverlapping()
+    public void IntervalsToEndpointsTestsOverlapping()
     {
-        List<Booking> bookingsInput = new List<Booking>
+        List<Interval> intervalsInput = new List<Interval>
         {
-            new Booking { StartDate = 1, EndDate = 3 },
-            new Booking { StartDate = 2, EndDate = 4 }
+            new Interval { StartTime = 1, EndTime = 3 },
+            new Interval { StartTime = 2, EndTime = 4 }
         };
 
         List<(int, bool, int)> endpointsExpected = new List<(int, bool, int)>
@@ -21,7 +21,7 @@ public class BookingParserTests
             (4, false, 1)
         };
 
-        List<(int, bool, int)> endpointsActual = BookingParser.BookingsToEndpoints(bookingsInput);
+        List<(int, bool, int)> endpointsActual = IntervalParser.IntervalsToEndpoints(intervalsInput);
 
         Assert.Equal(endpointsExpected.Count, endpointsActual.Count);
 
@@ -32,12 +32,12 @@ public class BookingParserTests
     }
     
     [Fact]
-    public void BookingsToEndpointsTestsSharedEndpoint()
+    public void IntervalsToEndpointsTestsSharedEndpoint()
     {
-        List<Booking> bookingsInput = new List<Booking>
+        List<Interval> intervalsInput = new List<Interval>
         {
-            new Booking { StartDate = 1, EndDate = 2 },
-            new Booking { StartDate = 2, EndDate = 3 }
+            new Interval { StartTime = 1, EndTime = 2 },
+            new Interval { StartTime = 2, EndTime = 3 }
         };
 
         List<(int, bool, int)> endpointsExpected = new List<(int, bool, int)>
@@ -48,7 +48,7 @@ public class BookingParserTests
             (3, false, 1)
         };
 
-        List<(int, bool, int)> endpointsActual = BookingParser.BookingsToEndpoints(bookingsInput);
+        List<(int, bool, int)> endpointsActual = IntervalParser.IntervalsToEndpoints(intervalsInput);
 
         Assert.Equal(endpointsExpected.Count, endpointsActual.Count);
 
@@ -59,12 +59,12 @@ public class BookingParserTests
     }
     
     [Fact]
-    public void BookingsToEndpointsTestsNoOverlap()
+    public void IntervalsToEndpointsTestsNoOverlap()
     {
-        List<Booking> bookingsInput = new List<Booking>
+        List<Interval> intervalsInput = new List<Interval>
         {
-            new Booking { StartDate = 1, EndDate = 2 },
-            new Booking { StartDate = 3, EndDate = 4 }
+            new Interval { StartTime = 1, EndTime = 2 },
+            new Interval { StartTime = 3, EndTime = 4 }
         };
 
         List<(int, bool, int)> endpointsExpected = new List<(int, bool, int)>
@@ -75,7 +75,7 @@ public class BookingParserTests
             (4, false, 1)
         };
 
-        List<(int, bool, int)> endpointsActual = BookingParser.BookingsToEndpoints(bookingsInput);
+        List<(int, bool, int)> endpointsActual = IntervalParser.IntervalsToEndpoints(intervalsInput);
 
         Assert.Equal(endpointsExpected.Count, endpointsActual.Count);
 
@@ -86,12 +86,12 @@ public class BookingParserTests
     }
     
     [Fact]
-    public void BookingsToEndpointsTestsInvalid()
+    public void IntervalsToEndpointsTestsInvalid()
     {
-        List<Booking> bookingsInput = new List<Booking>
+        List<Interval> intervalsInput = new List<Interval>
         {
-            new Booking { StartDate = 1, EndDate = 2 },
-            new Booking { StartDate = 3, EndDate = 4 }
+            new Interval { StartTime = 1, EndTime = 2 },
+            new Interval { StartTime = 3, EndTime = 4 }
         };
 
         List<(int, bool, int)> endpointsExpected = new List<(int, bool, int)>
@@ -102,7 +102,7 @@ public class BookingParserTests
             (4, true, 1)
         };
 
-        List<(int, bool, int)> endpointsActual = BookingParser.BookingsToEndpoints(bookingsInput);
+        List<(int, bool, int)> endpointsActual = IntervalParser.IntervalsToEndpoints(intervalsInput);
 
         Assert.Equal(endpointsExpected.Count, endpointsActual.Count);
 

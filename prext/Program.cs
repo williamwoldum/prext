@@ -1,3 +1,3 @@
 ﻿using prext;
 
-Console.WriteLine("bookings");
+Console.WriteLine("intervals");

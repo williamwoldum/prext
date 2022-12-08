@@ -1,10 +1,10 @@
 namespace prext;
 
-public class Booking
+public class Interval
 {
     public int Id;
-    public int StartDate;
-    public int EndDate;
+    public int StartTime;
+    public int EndTime;
     public bool Movable;
     public int Color;
     public int OrigColor;

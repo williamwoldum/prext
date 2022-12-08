@@ -2,11 +2,11 @@ namespace prext;
 
 using System.Threading.Tasks;
 
-public static class BookingFitter
+public static class IntervalFitter
 {
-    public static async Task<List<Booking>> Prext(List<Booking> bookings, int k, int timeoutInSecs=2)
+    public static async Task<List<Interval>> Prext(List<Interval> intervals, int k, int timeoutInSecs=2)
     {
-        var task = Task.Run(() => PrextNoTimeout(bookings, k));
+        var task = Task.Run(() => PrextNoTimeout(intervals, k));
         
         try
         {
@@ -28,23 +28,23 @@ public static class BookingFitter
         throw new Exception();
     }
 
-    private static List<Booking> PrextNoTimeout(List<Booking> bookings, int k)
+    private static List<Interval> PrextNoTimeout(List<Interval> intervals, int k)
     {
-        if (!ValidateBookings(bookings, k))
-            throw new ArgumentException("Supplied bookings are invalid", nameof(bookings));
+        if (!ValidateIntervals(intervals, k))
+            throw new ArgumentException("Supplied intervals are invalid", nameof(intervals));
 
-        bookings = PrepareBookingColoringsForRecoloring(bookings);
+        intervals = PrepareIntervalColoringsForRecoloring(intervals);
         
-        bookings.Sort((b1, b2) => b1.StartDate.CompareTo(b2.StartDate));
-        List<(int, bool, int)> endpoints = BookingParser.BookingsToEndpoints(bookings);
+        intervals.Sort((b1, b2) => b1.StartTime.CompareTo(b2.StartTime));
+        List<(int, bool, int)> endpoints = IntervalParser.IntervalsToEndpoints(intervals);
 
 
-        List<Booking>[] preColored = new List<Booking>[k];
+        List<Interval>[] preColored = new List<Interval>[k];
         for (int c = 0; c < k; c++)
-            preColored[c] = new List<Booking>();
+            preColored[c] = new List<Interval>();
 
-        foreach (var booking in bookings.Where(booking => !booking.Movable))
-            preColored[booking.Color].Add(booking);
+        foreach (var interval in intervals.Where(interval => !interval.Movable))
+            preColored[interval.Color].Add(interval);
 
         int[] preColoredIdx = new int[k];
 
@@ -70,35 +70,35 @@ public static class BookingFitter
             if (i >= endpoints.Count || i < 0) break;
 
             (_, bool eIsStart, int eIdx) = endpoints[i];
-            Booking booking = bookings[eIdx];
+            Interval interval = intervals[eIdx];
 
             switch (eIsStart)
             {
                 // Start point of pre-colored interval
-                case true when !booking.Movable:
+                case true when !interval.Movable:
                 {
                     if (direction == -1)
                     {
-                        ColorClass cc = booking.Cc!;
-                        booking.Cc = null;
-                        cc.Bookings.RemoveAt(cc.Bookings.Count - 1);
-                        preColoredIdx[booking.Color]--;
+                        ColorClass cc = interval.Cc!;
+                        interval.Cc = null;
+                        cc.Intervals.RemoveAt(cc.Intervals.Count - 1);
+                        preColoredIdx[interval.Color]--;
                         i--;
                     }
                     else
                     {
-                        preColoredIdx[booking.Color]++;
-                        ColorClass cc = colors[booking.Color];
+                        preColoredIdx[interval.Color]++;
+                        ColorClass cc = colors[interval.Color];
 
-                        if (cc.Colors.Count > cc.Bookings.Count)
+                        if (cc.Colors.Count > cc.Intervals.Count)
                         {
-                            cc.Bookings.Add(booking);
-                            booking.Cc = cc;
+                            cc.Intervals.Add(interval);
+                            interval.Cc = cc;
                             i++;
                             continue;
                         }
 
-                        preColoredIdx[booking.Color]--;
+                        preColoredIdx[interval.Color]--;
                         i--;
                         direction = -1;
                     }
@@ -107,7 +107,7 @@ public static class BookingFitter
                 }
                 
                 // Start point of movable interval
-                case true when booking.Movable:
+                case true when interval.Movable:
                 {
                     int j = 0;
                     if (direction == -1)
@@ -115,9 +115,9 @@ public static class BookingFitter
                         (j, ccZero, _, _) = states[^1];
                         states.RemoveAt(states.Count - 1);
                         ColorClass cc = ccs[j];
-                        booking.Cc = null;
+                        interval.Cc = null;
                         cc.NumMovables--;
-                        cc.Bookings.RemoveAt(cc.Bookings.Count - 1);
+                        cc.Intervals.RemoveAt(cc.Intervals.Count - 1);
                         j++;
                         direction = 1;
                     }
@@ -127,9 +127,9 @@ public static class BookingFitter
                         while (j < ccs.Count)
                         {
                             ColorClass cc = ccs[j];
-                            if (cc.Colors.Count > cc.Bookings.Count)
+                            if (cc.Colors.Count > cc.Intervals.Count)
                             {
-                                cc.Bookings.Add(booking);
+                                cc.Intervals.Add(interval);
                                 cc.NumMovables++;
                                 states.Add((j, ccZero, null, null));
                                 if (cc == ccZero)
@@ -137,7 +137,7 @@ public static class BookingFitter
                                     ccZero = null;
                                 }
 
-                                booking.Cc = cc;
+                                interval.Cc = cc;
                                 throw new Exception();
                             }
 
@@ -156,44 +156,44 @@ public static class BookingFitter
                 }
 
                 // End point of pre-colored interval
-                case false when !booking.Movable:
+                case false when !interval.Movable:
                 {
                     if (direction == 1)
                     {
-                        ColorClass? cc = booking.Cc;
-                        int bookingIdx = cc!.Bookings.IndexOf(booking);
-                        cc.Bookings.RemoveAt(bookingIdx);
+                        ColorClass? cc = interval.Cc;
+                        int intervalIdx = cc!.Intervals.IndexOf(interval);
+                        cc.Intervals.RemoveAt(intervalIdx);
 
                         if (cc.Colors.Count > 1)
                         {
                             if (ccZero != null && ccZero != cc)
                             {
-                                ccZero.Colors.Add(booking.Color);
-                                colors[booking.Color] = ccZero;
-                                int cIdx = cc.Colors.IndexOf(booking.Color);
+                                ccZero.Colors.Add(interval.Color);
+                                colors[interval.Color] = ccZero;
+                                int cIdx = cc.Colors.IndexOf(interval.Color);
                                 cc.Colors.RemoveAt(cIdx);
-                                states.Add((0, ccZero, bookingIdx, cIdx));
+                                states.Add((0, ccZero, intervalIdx, cIdx));
                             }
                             else if (ccZero != cc)
                             {
-                                ColorClass ccNew = new ColorClass { Colors = new List<int> { booking.Color } };
+                                ColorClass ccNew = new ColorClass { Colors = new List<int> { interval.Color } };
                                 ccs.Add(ccNew);
-                                colors[booking.Color] = ccNew;
+                                colors[interval.Color] = ccNew;
                                 ccZero = ccNew;
-                                int cIdx = cc.Colors.IndexOf(booking.Color);
+                                int cIdx = cc.Colors.IndexOf(interval.Color);
                                 cc.Colors.RemoveAt(cIdx);
-                                states.Add((1, ccZero, bookingIdx, cIdx));
+                                states.Add((1, ccZero, intervalIdx, cIdx));
                             }
                             else
                             {
-                                states.Add((2, ccZero, bookingIdx, -1));
+                                states.Add((2, ccZero, intervalIdx, -1));
                             }
 
                             i++;
                         }
                         else
                         {
-                            states.Add((3, ccZero, bookingIdx, -1));
+                            states.Add((3, ccZero, intervalIdx, -1));
                             i++;
                         }
 
@@ -202,26 +202,26 @@ public static class BookingFitter
 
                     else
                     {
-                        (int j, ccZero, int? bookingIdx, int? cIdx) = states[^1];
+                        (int j, ccZero, int? intervalIdx, int? cIdx) = states[^1];
                         states.RemoveAt(states.Count - 1);
-                        ColorClass cc = booking.Cc!;
+                        ColorClass cc = interval.Cc!;
 
                         switch (j)
                         {
                             case 0:
-                                cc.Colors.Insert((int)cIdx!, booking.Color);
-                                colors[booking.Color] = cc;
+                                cc.Colors.Insert((int)cIdx!, interval.Color);
+                                colors[interval.Color] = cc;
                                 ccZero!.Colors.RemoveAt(ccZero.Colors.Count - 1);
                                 break;
                             case 1:
-                                cc.Colors.Insert((int)cIdx!, booking.Color);
-                                colors[booking.Color] = cc;
+                                cc.Colors.Insert((int)cIdx!, interval.Color);
+                                colors[interval.Color] = cc;
                                 ccs.RemoveAt(ccs.Count - 1);
                                 ccZero = null;
                                 break;
                         }
 
-                        cc.Bookings.Insert((int)bookingIdx!, booking);
+                        cc.Intervals.Insert((int)intervalIdx!, interval);
                         i--;
                         continue;
                     }
@@ -232,18 +232,18 @@ public static class BookingFitter
                 {
                     if (direction == 1)
                     {
-                        ColorClass? cc = booking.Cc;
-                        int bookingIdx = cc!.Bookings.IndexOf(booking);
-                        cc.Bookings.RemoveAt(bookingIdx);
+                        ColorClass? cc = interval.Cc;
+                        int intervalIdx = cc!.Intervals.IndexOf(interval);
+                        cc.Intervals.RemoveAt(intervalIdx);
                         cc.NumMovables--;
                         if (cc.NumMovables == 0)
                         {
                             if (ccZero != null)
                             {
                                 ccZero.Colors.AddRange(cc.Colors);
-                                ccZero.Bookings.AddRange(cc.Bookings);
+                                ccZero.Intervals.AddRange(cc.Intervals);
 
-                                foreach (Booking b in cc.Bookings)
+                                foreach (Interval b in cc.Intervals)
                                 {
                                     b.Cc = ccZero;
                                 }
@@ -255,17 +255,17 @@ public static class BookingFitter
 
                                 int ccIdx = ccs.IndexOf(cc);
                                 ccs.RemoveAt(ccIdx);
-                                states.Add((0, ccZero, bookingIdx, ccIdx));
+                                states.Add((0, ccZero, intervalIdx, ccIdx));
                             }
                             else
                             {
-                                states.Add((1, ccZero, bookingIdx, -1));
+                                states.Add((1, ccZero, intervalIdx, -1));
                                 ccZero = cc;
                             }
                         }
                         else
                         {
-                            states.Add((2, ccZero, bookingIdx, -1));
+                            states.Add((2, ccZero, intervalIdx, -1));
                         }
 
                         i++;
@@ -273,9 +273,9 @@ public static class BookingFitter
                     }
                     else
                     {
-                        (int j, ColorClass? ccZeroOld, int? bookingIdx, int? ccIdx) = states[^1];
+                        (int j, ColorClass? ccZeroOld, int? intervalIdx, int? ccIdx) = states[^1];
                         states.RemoveAt(states.Count - 1);
-                        ColorClass? cc = booking.Cc;
+                        ColorClass? cc = interval.Cc;
                         if (j == 0)
                         {
                             ccs.Insert((int)ccIdx!, cc!);
@@ -285,16 +285,16 @@ public static class BookingFitter
                                 ccZero!.Colors.Remove(c);
                             }
 
-                            foreach (Booking b in cc.Bookings)
+                            foreach (Interval b in cc.Intervals)
                             {
                                 b.Cc = cc;
-                                ccZero!.Bookings.Remove(b);
+                                ccZero!.Intervals.Remove(b);
                             }
                         }
 
                         ccZero = ccZeroOld;
                         cc!.NumMovables++;
-                        cc.Bookings.Insert((int)bookingIdx!, booking);
+                        cc.Intervals.Insert((int)intervalIdx!, interval);
                         i--;
                         continue;
                     }
@@ -304,60 +304,60 @@ public static class BookingFitter
 
         ////////////////////////////////////////////////////////////////////////////////
 
-        if (i < 0) throw new ArgumentException("Bookings can not be fitted", nameof(bookings));
+        if (i < 0) throw new ArgumentException("Intervals can not be fitted", nameof(intervals));
 
         while (i > 0)
         {
             i--;
             (_, bool eIsStart, int eIdx) = endpoints[i];
-            Booking booking = bookings[eIdx];
+            Interval interval = intervals[eIdx];
 
             switch (eIsStart)
             {
                 // Start point of pre-colored interval
-                case true when !booking.Movable:
-                    booking.Cc!.Bookings.RemoveAt(booking.Cc.Bookings.Count - 1);
+                case true when !interval.Movable:
+                    interval.Cc!.Intervals.RemoveAt(interval.Cc.Intervals.Count - 1);
                     continue;
 
                 // Start point of movable interval
-                case true when booking.Movable:
+                case true when interval.Movable:
                 {
                     (int j, ccZero, _, _) = states[^1];
                     states.RemoveAt(states.Count - 1);
                     ccs[j].NumMovables--;
-                    ccs[j].Bookings.RemoveAt(ccs[j].Bookings.Count - 1);
+                    ccs[j].Intervals.RemoveAt(ccs[j].Intervals.Count - 1);
                     continue;
                 }
 
                 // End point of pre-colored interval
-                case false when !booking.Movable:
+                case false when !interval.Movable:
                 {
-                    (int j, ccZero, int? bookingIdx, int? cIdx) = states[^1];
+                    (int j, ccZero, int? intervalIdx, int? cIdx) = states[^1];
                     states.RemoveAt(states.Count - 1);
                     if (j == 0)
                     {
-                        booking.Cc!.Colors.Insert((int)cIdx!, booking.Color);
-                        colors[booking.Color] = booking.Cc;
+                        interval.Cc!.Colors.Insert((int)cIdx!, interval.Color);
+                        colors[interval.Color] = interval.Cc;
                         ccZero!.Colors.RemoveAt(ccZero.Colors.Count - 1);
                     }
                     else if (j == 1)
                     {
-                        booking.Cc!.Colors.Insert((int)cIdx!, booking.Color);
-                        colors[booking.Color] = booking.Cc;
+                        interval.Cc!.Colors.Insert((int)cIdx!, interval.Color);
+                        colors[interval.Color] = interval.Cc;
                         ccs.RemoveAt(ccs.Count - 1);
                         ccZero = null;
                     }
 
-                    booking.Cc!.Bookings.Insert((int)bookingIdx!, booking);
+                    interval.Cc!.Intervals.Insert((int)intervalIdx!, interval);
                     continue;
                 }
 
                 // End point of movable interval
                 default:
                 {
-                    (int j, ColorClass? ccZeroOld, int? bookingIdx, int? ccIdx) = states[^1];
+                    (int j, ColorClass? ccZeroOld, int? intervalIdx, int? ccIdx) = states[^1];
                     states.RemoveAt(states.Count - 1);
-                    ColorClass? cc = booking.Cc;
+                    ColorClass? cc = interval.Cc;
                     if (j == 0)
                     {
                         ccs.Insert((int)ccIdx!, cc!);
@@ -368,22 +368,22 @@ public static class BookingFitter
                             ccZero.Colors.RemoveAt(cIdx);
                         }
 
-                        foreach (Booking b in cc.Bookings)
+                        foreach (Interval b in cc.Intervals)
                         {
                             b.Cc = cc;
-                            ccZero!.Bookings.Remove(b);
+                            ccZero!.Intervals.Remove(b);
                         }
                     }
 
                     ccZero = ccZeroOld;
                     cc!.NumMovables++;
-                    cc.Bookings.Insert((int)bookingIdx!, booking);
+                    cc.Intervals.Insert((int)intervalIdx!, interval);
 
-                    List<int> usedColors = (from b in cc.Bookings where b.Color != -1 select b.Color).ToList();
+                    List<int> usedColors = (from b in cc.Intervals where b.Color != -1 select b.Color).ToList();
 
                     foreach (var c in cc.Colors.Where(c => !usedColors.Contains(c)))
                     {
-                        booking.Color = c;
+                        interval.Color = c;
                         break;
                     }
 
@@ -392,39 +392,39 @@ public static class BookingFitter
             }
         }
 
-        return bookings;
+        return intervals;
     }
     
-    private static List<Booking> PrepareBookingColoringsForRecoloring(List<Booking> bookings)
+    private static List<Interval> PrepareIntervalColoringsForRecoloring(List<Interval> intervals)
     {
-        foreach (Booking booking in bookings)
+        foreach (Interval interval in intervals)
         {
-            booking.Color = booking.Movable ? -1 : booking.OrigColor;
+            interval.Color = interval.Movable ? -1 : interval.OrigColor;
         }
 
-        return bookings;
+        return intervals;
     }
 
-    public static bool ValidateBookings(List<Booking> bookings, int k)
+    public static bool ValidateIntervals(List<Interval> intervals, int k)
     {
-        if (bookings.Any(booking => booking.Color < 0 || booking.Color >= k))
+        if (intervals.Any(interval => interval.Color < 0 || interval.Color >= k))
         {
             return false;
         }
 
-        List<(int, bool, int)> endpoints = BookingParser.BookingsToEndpoints(bookings);
+        List<(int, bool, int)> endpoints = IntervalParser.IntervalsToEndpoints(intervals);
         bool[] colorMap = new bool[k];
 
-        foreach ((_, bool isStart, int bookingIdx) in endpoints)
+        foreach ((_, bool isStart, int intervalIdx) in endpoints)
         {
             if (isStart)
             {
-                if (colorMap[bookings[bookingIdx].Color]) return false;
-                colorMap[bookings[bookingIdx].Color] = true;
+                if (colorMap[intervals[intervalIdx].Color]) return false;
+                colorMap[intervals[intervalIdx].Color] = true;
             }
             else
             {
-                colorMap[bookings[bookingIdx].Color] = false;
+                colorMap[intervals[intervalIdx].Color] = false;
             }
         }
 
