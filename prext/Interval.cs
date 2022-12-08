@@ -7,6 +7,6 @@ public class Interval
     public int EndTime;
     public bool Movable;
     public int Color;
-    public int OrigColor;
+    public int ColorIdx;
     public ColorClass? Cc;
 }

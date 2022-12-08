@@ -4,19 +4,21 @@ using System.Threading.Tasks;
 
 public static class IntervalFitter
 {
-    public static async Task<List<Interval>> Prext(List<Interval> intervals, int k, int timeoutInSecs=2)
+    public static async Task<List<Interval>> Prext(List<Interval> intervals, Dictionary<int, int> colorMap,
+        int timeoutInSecs = 2)
     {
-        var task = Task.Run(() => PrextNoTimeout(intervals, k));
-        
+        var task = Task.Run(() => PrextNoTimeout(intervals, colorMap));
+
         try
         {
             if (await Task.WhenAny(task, Task.Delay(timeoutInSecs * 1000)) == task)
             {
                 return task.Result;
             }
+
             throw new TimeoutException("Timed out");
         }
-        
+
         catch (AggregateException ae)
         {
             foreach (var ex in ae.InnerExceptions)
@@ -28,13 +30,15 @@ public static class IntervalFitter
         throw new Exception();
     }
 
-    private static List<Interval> PrextNoTimeout(List<Interval> intervals, int k)
+    private static List<Interval> PrextNoTimeout(List<Interval> intervals, Dictionary<int, int> colorMap)
     {
+        int k = colorMap.Count;
+
         if (!ValidateIntervals(intervals, k))
             throw new ArgumentException("Supplied intervals are invalid", nameof(intervals));
 
         intervals = PrepareIntervalColoringsForRecoloring(intervals);
-        
+
         intervals.Sort((b1, b2) => b1.StartTime.CompareTo(b2.StartTime));
         List<(int, bool, int)> endpoints = IntervalParser.IntervalsToEndpoints(intervals);
 
@@ -44,18 +48,18 @@ public static class IntervalFitter
             preColored[c] = new List<Interval>();
 
         foreach (var interval in intervals.Where(interval => !interval.Movable))
-            preColored[interval.Color].Add(interval);
+            preColored[interval.ColorIdx].Add(interval);
 
         int[] preColoredIdx = new int[k];
 
 
-        List<ColorClass> ccs = new List<ColorClass> { new ColorClass { Colors = Enumerable.Range(0, k).ToList() } };
+        List<ColorClass> ccs = new List<ColorClass> { new ColorClass { ColorKeys = Enumerable.Range(0, k).ToList() } };
 
         ColorClass? ccZero = ccs[0];
 
-        ColorClass[] colors = new ColorClass[k];
+        ColorClass[] colorKeys = new ColorClass[k];
         for (int c = 0; c < k; c++)
-            colors[c] = ccZero;
+            colorKeys[c] = ccZero;
 
 
         List<(int, ColorClass?, int?, int?)> states = new List<(int, ColorClass?, int?, int?)>();
@@ -82,15 +86,15 @@ public static class IntervalFitter
                         ColorClass cc = interval.Cc!;
                         interval.Cc = null;
                         cc.Intervals.RemoveAt(cc.Intervals.Count - 1);
-                        preColoredIdx[interval.Color]--;
+                        preColoredIdx[interval.ColorIdx]--;
                         i--;
                     }
                     else
                     {
-                        preColoredIdx[interval.Color]++;
-                        ColorClass cc = colors[interval.Color];
+                        preColoredIdx[interval.ColorIdx]++;
+                        ColorClass cc = colorKeys[interval.ColorIdx];
 
-                        if (cc.Colors.Count > cc.Intervals.Count)
+                        if (cc.ColorKeys.Count > cc.Intervals.Count)
                         {
                             cc.Intervals.Add(interval);
                             interval.Cc = cc;
@@ -98,14 +102,14 @@ public static class IntervalFitter
                             continue;
                         }
 
-                        preColoredIdx[interval.Color]--;
+                        preColoredIdx[interval.ColorIdx]--;
                         i--;
                         direction = -1;
                     }
 
                     continue;
                 }
-                
+
                 // Start point of movable interval
                 case true when interval.Movable:
                 {
@@ -127,7 +131,7 @@ public static class IntervalFitter
                         while (j < ccs.Count)
                         {
                             ColorClass cc = ccs[j];
-                            if (cc.Colors.Count > cc.Intervals.Count)
+                            if (cc.ColorKeys.Count > cc.Intervals.Count)
                             {
                                 cc.Intervals.Add(interval);
                                 cc.NumMovables++;
@@ -164,24 +168,24 @@ public static class IntervalFitter
                         int intervalIdx = cc!.Intervals.IndexOf(interval);
                         cc.Intervals.RemoveAt(intervalIdx);
 
-                        if (cc.Colors.Count > 1)
+                        if (cc.ColorKeys.Count > 1)
                         {
                             if (ccZero != null && ccZero != cc)
                             {
-                                ccZero.Colors.Add(interval.Color);
-                                colors[interval.Color] = ccZero;
-                                int cIdx = cc.Colors.IndexOf(interval.Color);
-                                cc.Colors.RemoveAt(cIdx);
+                                ccZero.ColorKeys.Add(interval.ColorIdx);
+                                colorKeys[interval.ColorIdx] = ccZero;
+                                int cIdx = cc.ColorKeys.IndexOf(interval.ColorIdx);
+                                cc.ColorKeys.RemoveAt(cIdx);
                                 states.Add((0, ccZero, intervalIdx, cIdx));
                             }
                             else if (ccZero != cc)
                             {
-                                ColorClass ccNew = new ColorClass { Colors = new List<int> { interval.Color } };
+                                ColorClass ccNew = new ColorClass { ColorKeys = new List<int> { interval.ColorIdx } };
                                 ccs.Add(ccNew);
-                                colors[interval.Color] = ccNew;
+                                colorKeys[interval.ColorIdx] = ccNew;
                                 ccZero = ccNew;
-                                int cIdx = cc.Colors.IndexOf(interval.Color);
-                                cc.Colors.RemoveAt(cIdx);
+                                int cIdx = cc.ColorKeys.IndexOf(interval.ColorIdx);
+                                cc.ColorKeys.RemoveAt(cIdx);
                                 states.Add((1, ccZero, intervalIdx, cIdx));
                             }
                             else
@@ -209,13 +213,13 @@ public static class IntervalFitter
                         switch (j)
                         {
                             case 0:
-                                cc.Colors.Insert((int)cIdx!, interval.Color);
-                                colors[interval.Color] = cc;
-                                ccZero!.Colors.RemoveAt(ccZero.Colors.Count - 1);
+                                cc.ColorKeys.Insert((int)cIdx!, interval.ColorIdx);
+                                colorKeys[interval.ColorIdx] = cc;
+                                ccZero!.ColorKeys.RemoveAt(ccZero.ColorKeys.Count - 1);
                                 break;
                             case 1:
-                                cc.Colors.Insert((int)cIdx!, interval.Color);
-                                colors[interval.Color] = cc;
+                                cc.ColorKeys.Insert((int)cIdx!, interval.ColorIdx);
+                                colorKeys[interval.ColorIdx] = cc;
                                 ccs.RemoveAt(ccs.Count - 1);
                                 ccZero = null;
                                 break;
@@ -240,7 +244,7 @@ public static class IntervalFitter
                         {
                             if (ccZero != null)
                             {
-                                ccZero.Colors.AddRange(cc.Colors);
+                                ccZero.ColorKeys.AddRange(cc.ColorKeys);
                                 ccZero.Intervals.AddRange(cc.Intervals);
 
                                 foreach (Interval b in cc.Intervals)
@@ -248,9 +252,9 @@ public static class IntervalFitter
                                     b.Cc = ccZero;
                                 }
 
-                                foreach (int c in cc.Colors)
+                                foreach (int c in cc.ColorKeys)
                                 {
-                                    colors[c] = ccZero;
+                                    colorKeys[c] = ccZero;
                                 }
 
                                 int ccIdx = ccs.IndexOf(cc);
@@ -279,10 +283,10 @@ public static class IntervalFitter
                         if (j == 0)
                         {
                             ccs.Insert((int)ccIdx!, cc!);
-                            foreach (int c in cc!.Colors)
+                            foreach (int c in cc!.ColorKeys)
                             {
-                                colors[c] = cc;
-                                ccZero!.Colors.Remove(c);
+                                colorKeys[c] = cc;
+                                ccZero!.ColorKeys.Remove(c);
                             }
 
                             foreach (Interval b in cc.Intervals)
@@ -336,14 +340,14 @@ public static class IntervalFitter
                     states.RemoveAt(states.Count - 1);
                     if (j == 0)
                     {
-                        interval.Cc!.Colors.Insert((int)cIdx!, interval.Color);
-                        colors[interval.Color] = interval.Cc;
-                        ccZero!.Colors.RemoveAt(ccZero.Colors.Count - 1);
+                        interval.Cc!.ColorKeys.Insert((int)cIdx!, interval.ColorIdx);
+                        colorKeys[interval.ColorIdx] = interval.Cc;
+                        ccZero!.ColorKeys.RemoveAt(ccZero.ColorKeys.Count - 1);
                     }
                     else if (j == 1)
                     {
-                        interval.Cc!.Colors.Insert((int)cIdx!, interval.Color);
-                        colors[interval.Color] = interval.Cc;
+                        interval.Cc!.ColorKeys.Insert((int)cIdx!, interval.ColorIdx);
+                        colorKeys[interval.ColorIdx] = interval.Cc;
                         ccs.RemoveAt(ccs.Count - 1);
                         ccZero = null;
                     }
@@ -361,11 +365,11 @@ public static class IntervalFitter
                     if (j == 0)
                     {
                         ccs.Insert((int)ccIdx!, cc!);
-                        foreach (int c in cc!.Colors)
+                        foreach (int c in cc!.ColorKeys)
                         {
-                            colors[c] = cc;
-                            int cIdx = ccZero!.Colors.IndexOf(c);
-                            ccZero.Colors.RemoveAt(cIdx);
+                            colorKeys[c] = cc;
+                            int cIdx = ccZero!.ColorKeys.IndexOf(c);
+                            ccZero.ColorKeys.RemoveAt(cIdx);
                         }
 
                         foreach (Interval b in cc.Intervals)
@@ -379,11 +383,12 @@ public static class IntervalFitter
                     cc!.NumMovables++;
                     cc.Intervals.Insert((int)intervalIdx!, interval);
 
-                    List<int> usedColors = (from b in cc.Intervals where b.Color != -1 select b.Color).ToList();
+                    List<int> usedColorsKeys = (from b in cc.Intervals where b.ColorIdx != -1 select b.ColorIdx).ToList();
 
-                    foreach (var c in cc.Colors.Where(c => !usedColors.Contains(c)))
+                    foreach (var cKey in cc.ColorKeys.Where(key => !usedColorsKeys.Contains(key)))
                     {
-                        interval.Color = c;
+                        interval.Color = colorMap[cKey];
+                        interval.ColorIdx = cKey;
                         break;
                     }
 
@@ -394,37 +399,35 @@ public static class IntervalFitter
 
         return intervals;
     }
-    
+
     private static List<Interval> PrepareIntervalColoringsForRecoloring(List<Interval> intervals)
     {
-        foreach (Interval interval in intervals)
+        foreach (var interval in intervals.Where(interval => interval.Movable))
         {
-            interval.Color = interval.Movable ? -1 : interval.OrigColor;
+            interval.Color = -1;
+            interval.ColorIdx = -1;
         }
-
         return intervals;
     }
 
     public static bool ValidateIntervals(List<Interval> intervals, int k)
     {
-        if (intervals.Any(interval => interval.Color < 0 || interval.Color >= k))
-        {
+        if (intervals.Any(interval => interval.ColorIdx < 0 || interval.ColorIdx >= k))
             return false;
-        }
 
         List<(int, bool, int)> endpoints = IntervalParser.IntervalsToEndpoints(intervals);
-        bool[] colorMap = new bool[k];
+        bool[] usedColorLookUp = new bool[k];
 
         foreach ((_, bool isStart, int intervalIdx) in endpoints)
         {
             if (isStart)
             {
-                if (colorMap[intervals[intervalIdx].Color]) return false;
-                colorMap[intervals[intervalIdx].Color] = true;
+                if (usedColorLookUp[intervals[intervalIdx].ColorIdx]) return false;
+                usedColorLookUp[intervals[intervalIdx].ColorIdx] = true;
             }
             else
             {
-                colorMap[intervals[intervalIdx].Color] = false;
+                usedColorLookUp[intervals[intervalIdx].ColorIdx] = false;
             }
         }
 

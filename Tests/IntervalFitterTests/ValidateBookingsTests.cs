@@ -26,8 +26,8 @@ public class ValidateIntervalsTests
     [InlineData("nordsoe", "Panoramaplads")]
     public void ValidateIntervalsValidDomain(string dataSetName, string campType)
     {
-        (List<Interval>? intervals, int k) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
-        Assert.True(IntervalFitter.ValidateIntervals(intervals, k));
+        (List<Interval> intervals, Dictionary<int, int> colorMap) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
+        Assert.True(IntervalFitter.ValidateIntervals(intervals, colorMap.Count));
     }
     
     [Theory]
@@ -52,14 +52,14 @@ public class ValidateIntervalsTests
     [InlineData("nordsoe", "Panoramaplads")]
     public void ValidateIntervalsInValidDomainOverlappingIntervals(string dataSetName, string campType)
     {
-        (List<Interval>? intervals, int k) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
+        (List<Interval> intervals, Dictionary<int, int> colorMap) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
         
         Random random = new Random();
         int randomIdx = random.Next(0, intervals.Count);
         
         intervals.Insert(0, intervals[randomIdx]);
         
-        Assert.False(IntervalFitter.ValidateIntervals(intervals, k));
+        Assert.False(IntervalFitter.ValidateIntervals(intervals, colorMap.Count));
     }
     
     [Theory]
@@ -84,15 +84,15 @@ public class ValidateIntervalsTests
     [InlineData("nordsoe", "Panoramaplads")]
     public void ValidateIntervalsInValidDomainTooFewColors(string dataSetName, string campType)
     {
-        (List<Interval>? intervals, int k) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
+        (List<Interval> intervals, Dictionary<int, int> colorMap) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
         
         Random random = new Random();
         int randomIdx = random.Next(1, intervals.Count);
         
-        intervals[randomIdx].Color = k - 1 + randomIdx;
+        intervals[randomIdx].ColorIdx = colorMap.Count - 1 + randomIdx;
         randomIdx = random.Next(0, intervals.Count);
-        intervals[randomIdx].Color = 0 - randomIdx;
+        intervals[randomIdx].ColorIdx = 0 - randomIdx;
         
-        Assert.False(IntervalFitter.ValidateIntervals(intervals, k));
+        Assert.False(IntervalFitter.ValidateIntervals(intervals, colorMap.Count));
     }
 }

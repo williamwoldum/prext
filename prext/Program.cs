@@ -1,3 +1,1 @@
-﻿using prext;
-
-Console.WriteLine("intervals");
+﻿Console.WriteLine("intervals");

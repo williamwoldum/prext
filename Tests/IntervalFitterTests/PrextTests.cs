@@ -25,21 +25,21 @@ public class PrextTests
     [InlineData("nordsoe", "El-plads", 7474)]
     public async Task PrextValidDomain(string dataSetName, string campType, int numIntervalsExpected)
     {
-        (List<Interval>? intervals, int k) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
-        intervals = await IntervalFitter.Prext(intervals, k, 15);
+        (List<Interval>? intervals, Dictionary<int, int> colorMap) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
+        intervals = await IntervalFitter.Prext(intervals, colorMap, 15);
         
         Assert.True(intervals != null);
         Assert.Equal(intervals!.Count, numIntervalsExpected);
 
-        Assert.True(IntervalFitter.ValidateIntervals(intervals, k));
+        Assert.True(IntervalFitter.ValidateIntervals(intervals, colorMap.Count));
     }
     
     [Theory]
     [InlineData("nordsoe", "Panoramaplads")]
     public async Task PrextInValidDomainTimeout(string dataSetName, string campType)
     {
-        (List<Interval>? intervals, int k) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
-        await Assert.ThrowsAsync<TimeoutException>( async () => await IntervalFitter.Prext(intervals, k));
+        (List<Interval>? intervals, Dictionary<int, int> colorMap) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
+        await Assert.ThrowsAsync<TimeoutException>( async () => await IntervalFitter.Prext(intervals, colorMap));
     }
     
     
@@ -65,14 +65,14 @@ public class PrextTests
     [InlineData("nordsoe", "Panoramaplads")]
     public async Task PrextInValidDomainOverlappingIntervals(string dataSetName, string campType)
     {
-        (List<Interval>? intervals, int k) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
+        (List<Interval>? intervals, Dictionary<int, int> colorMap) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
         
         Random random = new Random();
         int randomIdx = random.Next(0, intervals.Count);
         
         intervals.Insert(0, intervals[randomIdx]);
         
-        await Assert.ThrowsAsync<ArgumentException>( async () => await IntervalFitter.Prext(intervals, k, 15));
+        await Assert.ThrowsAsync<ArgumentException>( async () => await IntervalFitter.Prext(intervals, colorMap, 15));
     }
     
     [Theory]
@@ -97,15 +97,15 @@ public class PrextTests
     [InlineData("nordsoe", "Panoramaplads")]
     public async Task PrextInValidDomainTooFewColors(string dataSetName, string campType)
     {
-        (List<Interval>? intervals, int k) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
+        (List<Interval>? intervals, Dictionary<int, int> colorMap) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
         
         Random random = new Random();
         int randomIdx = random.Next(0, intervals.Count);
         
-        intervals[randomIdx].Color = k + randomIdx;
+        intervals[randomIdx].ColorIdx = colorMap.Count + randomIdx;
         randomIdx = random.Next(0, intervals.Count);
-        intervals[randomIdx].Color = -1 - randomIdx;
+        intervals[randomIdx].ColorIdx = -1 - randomIdx;
         
-        await Assert.ThrowsAsync<ArgumentException>( async () => await IntervalFitter.Prext(intervals, k, 15));
+        await Assert.ThrowsAsync<ArgumentException>( async () => await IntervalFitter.Prext(intervals, colorMap, 15));
     }
 }

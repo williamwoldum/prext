@@ -5,11 +5,12 @@ namespace Tests.IntervalFitterTests;
 
 public static class TestDataLoader
 {
-    public static (List<Interval>, int) LoadIntervalsFromDataSet(string dataSetName, string campType)
+    public static (List<Interval>, Dictionary<int, int>) LoadIntervalsFromDataSet(string dataSetName, string campType)
     {
         List<Interval> intervals = new();
         Dictionary<int, int> colorMap = new();
-        int nextColor = 0;
+        
+        int nextKey = 0;
 
         string filePath = @$"..\..\..\IntervalFitterTests\TestData\{dataSetName}.csv";
         bool isKolding = dataSetName.Equals("kolding");
@@ -19,9 +20,9 @@ public static class TestDataLoader
             while (!reader.EndOfStream)
             {
                 var row = reader.ReadLine()?.Split(',');
-                if (row == null) return (new(), 0);
+                if (row == null) return (new(), new());
                 if (isKolding && row[6].Equals(campType) || !isKolding && row[7].Equals(campType))
-                    intervals.Add(IntervalFromRow(row, colorMap, isKolding, ref nextColor));
+                    intervals.Add(IntervalFromRow(row, colorMap, isKolding, ref nextKey));
             }
         }
 
@@ -29,11 +30,11 @@ public static class TestDataLoader
         
         intervals = SanitizeIntervals(intervals, k);
 
-        return (intervals, k);
+        return (intervals, colorMap);
     }
 
     private static Interval IntervalFromRow(string[] row, Dictionary<int, int> colorMap, bool isKolding,
-        ref int nextColor)
+        ref int nextKey)
     {
         Interval interval = new Interval();
 
@@ -47,15 +48,15 @@ public static class TestDataLoader
 
         interval.Movable = !row[idx++].Contains("ikke flytbar");
 
-        int c = int.Parse(row[idx++]);
+        int c = int.Parse(row[idx]);
+        
+        if (!colorMap.ContainsValue(c))
+            colorMap[nextKey++] = c;
 
-        if (!colorMap.ContainsKey(c))
-        {
-            colorMap[c] = nextColor++;
-        }
-
-        interval.OrigColor = colorMap[c];
-        interval.Color = interval.OrigColor;
+        interval.Color = c;
+        
+        var cKey = colorMap.FirstOrDefault(x => x.Value == c).Key;
+        interval.ColorIdx = cKey;
 
         return interval;
     }
@@ -70,22 +71,22 @@ public static class TestDataLoader
     private static List<Interval> SanitizeIntervals(List<Interval> intervals, int k)
     {
         List<(int, bool, int)> endpoints = IntervalParser.IntervalsToEndpoints(intervals);
-        Interval?[] colors = new Interval?[k];
+        int?[] usedColorKeys = new int?[k];
 
         List<Interval> filtered = new();
 
-        foreach (var endpoint in endpoints)
+        foreach ((_, bool isStart, int intervalIdx) in endpoints)
         {
-            Interval interval = intervals[endpoint.Item3];
+            Interval interval = intervals[intervalIdx];
 
-            if (endpoint.Item2)
+            if (isStart)
             {
-                colors[interval.OrigColor] ??= interval;
+                usedColorKeys[interval.ColorIdx] ??= intervalIdx;
             }
-            else if (colors[interval.OrigColor] != null && colors[interval.OrigColor]!.Equals(interval))
+            else if (usedColorKeys[interval.ColorIdx] == intervalIdx)
             {
                 filtered.Add(interval);
-                colors[interval.OrigColor] = null;
+                usedColorKeys[interval.ColorIdx] = null;
             }
         }
 
