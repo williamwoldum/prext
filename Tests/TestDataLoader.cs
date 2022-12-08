@@ -1,7 +1,7 @@
 using System.Globalization;
 using prext;
 
-namespace Tests.IntervalFitterTests;
+namespace Tests;
 
 public static class TestDataLoader
 {
@@ -12,7 +12,7 @@ public static class TestDataLoader
         
         int nextKey = 0;
 
-        string filePath = @$"..\..\..\IntervalFitterTests\TestData\{dataSetName}.csv";
+        string filePath = @$"..\..\..\TestData\{dataSetName}.csv";
         bool isKolding = dataSetName.Equals("kolding");
 
         using (var reader = new StreamReader(filePath))

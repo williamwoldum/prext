@@ -1,8 +1,8 @@
 using prext;
 
-namespace Tests.IntervalFitterTests;
+namespace Tests;
 
-public class PrextTests
+public class IntervalFitterTests
 {
     [Theory]
     [InlineData("kolding", "10 m2 4pers u/udstyr", 72)]
@@ -31,7 +31,7 @@ public class PrextTests
         Assert.True(intervals != null);
         Assert.Equal(intervals!.Count, numIntervalsExpected);
 
-        Assert.True(IntervalFitter.ValidateIntervals(intervals, colorMap.Count));
+        Assert.True(IntervalParser.ValidateIntervals(intervals, colorMap.Count));
     }
     
     [Theory]
