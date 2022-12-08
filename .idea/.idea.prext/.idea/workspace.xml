@@ -6,21 +6,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ebf21a7-0629-466b-8289-ce1d23f30618" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Tests/BookingFitterTests/PrextTests.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Tests/BookingFitterTests/TestDataLoader.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tests/BookingFitterTests/BookingParserTests.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.prext/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.prext/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext.sln" beforeDir="false" afterPath="$PROJECT_DIR$/prext.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/BookingFitter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/prext/BookingFitter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/BookingParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/prext/BookingParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/Data/kolding.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/BookingFitterTests/TestData/kolding.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/Data/nordsoe.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/BookingFitterTests/TestData/nordsoe.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/prext/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.dll" beforeDir="false" afterPath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.dll" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/ref/prext.dll" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/ref/prext.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/refint/prext.dll" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/refint/prext.dll" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +91,7 @@
       <workItem from="1670350578722" duration="2242000" />
       <workItem from="1670354778790" duration="23885000" />
       <workItem from="1670379481529" duration="473000" />
-      <workItem from="1670437418848" duration="18216000" />
+      <workItem from="1670437418848" duration="19185000" />
     </task>
     <task id="LOCAL-00001" summary="Initial">
       <created>1670379896528</created>
