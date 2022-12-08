@@ -26,7 +26,7 @@ public class IntervalFitterTests
     public async Task PrextValidDomain(string dataSetName, string campType, int numIntervalsExpected)
     {
         (List<Interval>? intervals, Dictionary<int, int> colorMap) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
-        intervals = await IntervalFitter.Prext(intervals, colorMap, 15);
+        intervals = await IntervalFitter.FitIntervals(intervals, colorMap, 15);
         
         Assert.True(intervals != null);
         Assert.Equal(intervals!.Count, numIntervalsExpected);
@@ -39,7 +39,7 @@ public class IntervalFitterTests
     public async Task PrextInValidDomainTimeout(string dataSetName, string campType)
     {
         (List<Interval>? intervals, Dictionary<int, int> colorMap) = TestDataLoader.LoadIntervalsFromDataSet(dataSetName, campType);
-        await Assert.ThrowsAsync<TimeoutException>( async () => await IntervalFitter.Prext(intervals, colorMap));
+        await Assert.ThrowsAsync<TimeoutException>( async () => await IntervalFitter.FitIntervals(intervals, colorMap));
     }
     
     
@@ -72,7 +72,7 @@ public class IntervalFitterTests
         
         intervals.Insert(0, intervals[randomIdx]);
         
-        await Assert.ThrowsAsync<ArgumentException>( async () => await IntervalFitter.Prext(intervals, colorMap, 15));
+        await Assert.ThrowsAsync<ArgumentException>( async () => await IntervalFitter.FitIntervals(intervals, colorMap, 15));
     }
     
     [Theory]
@@ -106,6 +106,6 @@ public class IntervalFitterTests
         randomIdx = random.Next(0, intervals.Count);
         intervals[randomIdx].ColorIdx = -1 - randomIdx;
         
-        await Assert.ThrowsAsync<ArgumentException>( async () => await IntervalFitter.Prext(intervals, colorMap, 15));
+        await Assert.ThrowsAsync<ArgumentException>( async () => await IntervalFitter.FitIntervals(intervals, colorMap, 15));
     }
 }

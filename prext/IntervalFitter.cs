@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 public static class IntervalFitter
 {
-    public static async Task<List<Interval>> Prext(List<Interval> intervals, Dictionary<int, int> colorMap,
+    public static async Task<List<Interval>> FitIntervals(List<Interval> intervals, Dictionary<int, int> colorMap,
         int timeoutInSecs = 2)
     {
-        var task = Task.Run(() => PrextNoTimeout(intervals, colorMap));
+        var task = Task.Run(() => Prext(intervals, colorMap));
 
         try
         {
@@ -25,7 +25,7 @@ public static class IntervalFitter
         throw new Exception();
     }
 
-    private static List<Interval> PrextNoTimeout(List<Interval> intervals, Dictionary<int, int> colorMap)
+    private static List<Interval> Prext(List<Interval> intervals, Dictionary<int, int> colorMap)
     {
         int k = colorMap.Count;
 

@@ -7,40 +7,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3ebf21a7-0629-466b-8289-ce1d23f30618" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.prext/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.prext/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/IntervalFitterTests/BookingParserTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/IntervalFitterTests/PrextTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/IntervalFitterTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/IntervalFitterTests/TestData/kolding.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestData/kolding.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/IntervalFitterTests/TestData/nordsoe.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestData/nordsoe.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/IntervalFitterTests/TestDataLoader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestDataLoader.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/IntervalFitterTests/ValidateBookingsTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/IntervalParserTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/bin/Debug/net6.0/CoverletSourceRootsMapping" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/bin/Debug/net6.0/CoverletSourceRootsMapping" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/obj/Debug/net6.0/Tests.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/obj/Debug/net6.0/Tests.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/obj/Debug/net6.0/Tests.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/obj/Debug/net6.0/Tests.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/obj/Debug/net6.0/Tests.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/obj/Debug/net6.0/Tests.csproj.AssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/obj/Tests.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/obj/Tests.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/obj/Tests.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/obj/Tests.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/obj/rider.project.restore.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/IntervalFitter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/prext/IntervalFitter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/IntervalParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/prext/IntervalParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.dll" beforeDir="false" afterPath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.exe" beforeDir="false" afterPath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/prext/bin/Debug/net6.0/prext.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/apphost.exe" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/apphost.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.csproj.CoreCompileInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.dll" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.genruntimeconfig.cache" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.genruntimeconfig.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/Debug/net6.0/prext.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/prext.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/prext.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/prext.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/prext.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prext/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/prext/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +91,7 @@
       <workItem from="1670379481529" duration="473000" />
       <workItem from="1670437418848" duration="19832000" />
       <workItem from="1670486041770" duration="17625000" />
-      <workItem from="1670521389143" duration="858000" />
+      <workItem from="1670521389143" duration="1742000" />
     </task>
     <task id="LOCAL-00001" summary="Initial">
       <created>1670379896528</created>
