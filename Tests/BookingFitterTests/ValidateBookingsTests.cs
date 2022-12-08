@@ -87,7 +87,7 @@ public class ValidateBookingsTests
         (List<Booking>? bookings, int k) = TestDataLoader.LoadBookingsFromDataSet(dataSetName, campType);
         
         Random random = new Random();
-        int randomIdx = random.Next(0, bookings.Count);
+        int randomIdx = random.Next(1, bookings.Count);
         
         bookings[randomIdx].Color = k - 1 + randomIdx;
         randomIdx = random.Next(0, bookings.Count);

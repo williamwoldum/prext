@@ -1,11 +1,6 @@
-using System.Runtime.InteropServices;
-
 namespace prext;
 
-
 using System.Threading.Tasks;
-
-
 
 public static class BookingFitter
 {
@@ -40,7 +35,7 @@ public static class BookingFitter
 
         bookings = PrepareBookingColoringsForRecoloring(bookings);
         
-
+        bookings.Sort((b1, b2) => b1.StartDate.CompareTo(b2.StartDate));
         List<(int, bool, int)> endpoints = BookingParser.BookingsToEndpoints(bookings);
 
 
@@ -402,8 +397,6 @@ public static class BookingFitter
     
     private static List<Booking> PrepareBookingColoringsForRecoloring(List<Booking> bookings)
     {
-        bookings.Sort((b1, b2) => b1.StartDate.CompareTo(b2.StartDate));
-        
         foreach (Booking booking in bookings)
         {
             booking.Color = booking.Movable ? -1 : booking.OrigColor;
